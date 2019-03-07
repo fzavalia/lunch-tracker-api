@@ -1,13 +1,45 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import morgan from 'morgan';
+import mongoose from 'mongoose'
+import CRUDRouter from './routers/CRUDRouter';
+import User from '../models/User';
+import Expense from '../models/Expense';
+import Budget from '../models/Budget';
 
-const app = express()
+interface DBConfig {
+  host: string,
+  user: string,
+  pass: string,
+  name: string
+}
 
-app.use(bodyParser.json())
+interface Config {
+  port: number
+  db: DBConfig
+}
 
-app.use(morgan('tiny'))
+export default async (config: Config) => {
 
-app.listen(8000, () => {
-  console.log('Listening on port 8000')
-})
+  await mongoose.connect(
+    config.db.host, {
+      user: config.db.user,
+      pass: config.db.pass,
+      dbName: config.db.name,
+      useNewUrlParser: true
+    })
+
+  const app = express()
+
+  app.use(bodyParser.json())
+
+  app.use(morgan('tiny'))
+
+  app.use('/users', CRUDRouter.fromScratch(User))
+
+  app.use('/expenses', CRUDRouter.fromScratch(Expense))
+
+  app.use('/budgets', CRUDRouter.fromScratch(Budget))
+
+  app.listen(config.port, () => console.log(`Listening on port ${config.port}`))
+}

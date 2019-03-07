@@ -1,12 +1,19 @@
 import mongoose from 'mongoose'
 
 const schema = new mongoose.Schema({
-  amount: Number,
-  date: Date,
+  amount: {
+    type: Number,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
   month: {
-    type: [Number],
+    type: [String],
     enum: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
+    required: true
   }
 })
 
-export default mongoose.model('Budget', schema)
+export default mongoose.model('budgets', schema)

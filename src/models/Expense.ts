@@ -1,13 +1,20 @@
 import mongoose from 'mongoose'
 
 const schema = new mongoose.Schema({
-  amount: Number,
-  date: Date,
   restaurant: String,
+  amount: {
+    type: Number,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
 })
 
-export default mongoose.model('User', schema)
+export default mongoose.model('expenses', schema)
