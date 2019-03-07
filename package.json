@@ -1,0 +1,23 @@
+{
+  "name": "food-tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.18.10",
+    "typescript": "^3.3.3333"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "nodemon -w ./src -e ts -x \"npm run build && node ./build/index.js\""
+  },
+  "dependencies": {
+    "@types/express": "^4.16.1",
+    "@types/mongoose": "^5.3.21",
+    "@types/morgan": "^1.7.35",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.17",
+    "morgan": "^1.9.1"
+  }
+}
