@@ -1,10 +1,11 @@
 import mongoose from 'mongoose'
+import Repository from './Repository';
 
-class CRUDRepository {
+class CRUDRepository implements Repository {
 
   constructor(private model: mongoose.Model<mongoose.Document, {}>) { }
 
-  find = async (id: string) =>
+  show = async (id: string) =>
     await this.model
       .findById(id)
       .orFail()

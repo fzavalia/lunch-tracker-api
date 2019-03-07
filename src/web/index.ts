@@ -2,10 +2,6 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import morgan from 'morgan';
 import mongoose from 'mongoose'
-import CRUDRouter from './routers/CRUDRouter';
-import User from '../models/User';
-import Expense from '../models/Expense';
-import Budget from '../models/Budget';
 
 interface DBConfig {
   host: string,
@@ -32,14 +28,10 @@ export default async (config: Config) => {
   const app = express()
 
   app.use(bodyParser.json())
-
+  app.use(bodyParser.urlencoded({ extended: true }))
   app.use(morgan('tiny'))
 
-  app.use('/users', CRUDRouter.fromScratch(User))
-
-  app.use('/expenses', CRUDRouter.fromScratch(Expense))
-
-  app.use('/budgets', CRUDRouter.fromScratch(Budget))
+  app.get('/', (req, res) => res.send('ok'))
 
   app.listen(config.port, () => console.log(`Listening on port ${config.port}`))
 }
