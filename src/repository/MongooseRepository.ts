@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import Repository from './Repository';
 
-class CRUDRepository implements Repository {
+class MongooseRepository implements Repository {
 
   constructor(private model: mongoose.Model<mongoose.Document, {}>) { }
 
@@ -37,4 +37,4 @@ class CRUDRepository implements Repository {
       .lean()
 }
 
-export default CRUDRepository
+export default MongooseRepository

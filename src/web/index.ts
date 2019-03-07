@@ -2,6 +2,9 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import morgan from 'morgan';
 import mongoose from 'mongoose'
+import UsersRouter from './routers/UsersRouter';
+import MongooseRepository from '../repository/MongooseRepository';
+import User from '../models/User';
 
 interface DBConfig {
   host: string,
@@ -31,7 +34,9 @@ export default async (config: Config) => {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(morgan('tiny'))
 
-  app.get('/', (req, res) => res.send('ok'))
+  app.get('/', (_, res) => res.send('ok'))
+
+  app.use('/users', UsersRouter(new MongooseRepository(User)))
 
   app.listen(config.port, () => console.log(`Listening on port ${config.port}`))
 }
