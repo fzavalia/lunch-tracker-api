@@ -5,16 +5,17 @@ export interface RouterHandlerOptions {
   validation?: Schema
 }
 
+const validateRequestBody = (req: Request, validationSchema: Schema) => {
+  return new ExpressRequestBodyValidator(req, validationSchema).validate()
+}
+
 const makeRouterHandler = (handler: (req: Request, res: Response) => Promise<any>, options?: RouterHandlerOptions) => async (req: Request, res: Response) => {
 
   if (options && options.validation) {
 
-    const validator = new ExpressRequestBodyValidator(req, options.validation)
-
-    const errors = validator.validate()
+    const errors = validateRequestBody(req, options.validation)
 
     if (errors.length > 0) {
-
       res.status(422)
       res.json({ errors })
       return
