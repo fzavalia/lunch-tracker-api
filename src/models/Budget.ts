@@ -6,17 +6,13 @@ const schema = new mongoose.Schema({
     required: true
   },
   month: {
-    type: [String],
+    type: String,
     enum: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
     required: true
   },
   year: {
     type: Number,
     required: true
-  },
-  expenses: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Expense'
   }
 })
 

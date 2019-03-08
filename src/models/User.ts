@@ -4,10 +4,6 @@ const schema = new mongoose.Schema({
   name: {
     type: String,
     required: true
-  },
-  expenses: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Expense'
   }
 })
 
