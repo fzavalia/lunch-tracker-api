@@ -1,10 +1,12 @@
 import { Request } from "express";
 import { isNullOrUndefined } from "util";
+import moment from 'moment'
 
 export enum ExpressRequestBodyValidatorTypes {
   String,
   Number,
-  Email
+  Email,
+  Date
 }
 
 export interface Schema {
@@ -57,6 +59,11 @@ class ExpressRequestBodyValidator {
         case ExpressRequestBodyValidatorTypes.Email:
           if (!this.isEmail(propToValidate)) {
             return `${prop} has to be an email`;
+          }
+          break;
+        case ExpressRequestBodyValidatorTypes.Date:
+          if (!moment(propToValidate, moment.ISO_8601, true).isValid()) {
+            return `${prop} has to be an ISO_8601 date`;
           }
           break;
       }

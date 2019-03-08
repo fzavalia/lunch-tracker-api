@@ -17,4 +17,4 @@ const schema = new mongoose.Schema({
   },
 })
 
-export default mongoose.model('expenses', schema)
+export default mongoose.model('Expense', schema)

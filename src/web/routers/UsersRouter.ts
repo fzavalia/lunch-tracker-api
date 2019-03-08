@@ -1,4 +1,4 @@
-import { Router as ExpressRouter, Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import bcrypt from 'bcrypt'
 import Repository from "../../repository/Repository";
 import { ExpressRequestBodyValidatorTypes } from "../core/ExpressRequestBodyValidator";
@@ -6,7 +6,7 @@ import makeRouterHandler, { RouterHandlerOptions } from "../core/makeRouterHandl
 
 export default (repository: Repository) => {
 
-  const router = ExpressRouter()
+  const router = Router()
 
   const createUserHandler = async (req: Request, res: Response) => {
 

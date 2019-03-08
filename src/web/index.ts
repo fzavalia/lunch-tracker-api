@@ -5,6 +5,8 @@ import mongoose from 'mongoose'
 import UsersRouter from './routers/UsersRouter';
 import MongooseRepository from '../repository/MongooseRepository';
 import User from '../models/User';
+import Expense from '../models/Expense';
+import ExpensesRouter from './routers/ExpensesRouter';
 
 interface DBConfig {
   host: string,
@@ -37,6 +39,7 @@ export default async (config: Config) => {
   app.get('/', (_, res) => res.send('ok'))
 
   app.use('/users', UsersRouter(new MongooseRepository(User)))
+  app.use('/expenses', ExpensesRouter(new MongooseRepository(Expense)))
 
   app.listen(config.port, () => console.log(`Listening on port ${config.port}`))
 }
