@@ -7,6 +7,7 @@ import MongooseRepository from '../repository/MongooseRepository';
 import User from '../models/User';
 import Expense from '../models/Expense';
 import ExpensesRouter from './routers/ExpensesRouter';
+import Budget from '../models/Budget';
 
 interface DBConfig {
   host: string,
@@ -22,13 +23,17 @@ interface Config {
 
 export default async (config: Config) => {
 
+  const { port, db } = config
+
   await mongoose.connect(
-    config.db.host, {
-      user: config.db.user,
-      pass: config.db.pass,
-      dbName: config.db.name,
+    db.host,
+    {
+      user: db.user,
+      pass: db.pass,
+      dbName: db.name,
       useNewUrlParser: true
-    })
+    }
+  )
 
   const app = express()
 
@@ -38,8 +43,13 @@ export default async (config: Config) => {
 
   app.get('/', (_, res) => res.send('ok'))
 
-  app.use('/users', UsersRouter(new MongooseRepository(User)))
-  app.use('/expenses', ExpensesRouter(new MongooseRepository(Expense)))
+  const users = new MongooseRepository(User)
+  const expenses = new MongooseRepository(Expense)
+  const budgets = new MongooseRepository(Budget)
 
-  app.listen(config.port, () => console.log(`Listening on port ${config.port}`))
+  app.use('/users', UsersRouter(users))
+  app.use('/expenses', ExpensesRouter(expenses))
+  app.use('/budgets', ExpensesRouter(budgets))
+
+  app.listen(port, () => console.log(`Listening on port ${port}`))
 }
