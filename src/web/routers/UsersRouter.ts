@@ -1,7 +1,7 @@
-import { Router, Request } from "express";
+import { Router } from "express";
 import bcrypt from 'bcrypt'
 import Repository from "../../repository/Repository";
-import { isNullOrUndefined } from "util";
+import ExpressRequestBodyValidator, { Type } from "../core/ExpressRequestBodyValidator";
 
 export default (repository: Repository) => {
 
@@ -11,22 +11,22 @@ export default (repository: Repository) => {
 
     const validator = new ExpressRequestBodyValidator(req, {
       name: {
-        type: 'string',
+        type: Type.String,
         required: true
       },
       email: {
-        type: 'email',
+        type: Type.Email,
         required: true,
       },
       password: {
-        type: 'string',
+        type: Type.String,
         required: true
       }
     })
-    
+
     try {
       await validator.validate()
-    } catch(e) {
+    } catch (e) {
       res.status(422)
       res.json({ errors: e })
       return
@@ -42,64 +42,4 @@ export default (repository: Repository) => {
   })
 
   return router
-}
-
-interface Schema {
-  [prop: string]: {
-    type: string,
-    required?: boolean,
-  }
-}
-
-class ExpressRequestBodyValidator {
-
-  constructor(private request: Request, private schema: Schema) { }
-
-  validate = () => new Promise((resolve, reject) => {
-
-    const errors = Object.keys(this.schema).reduce((errors: string[], propName) => {
-
-      const propValidations = this.schema[propName]
-
-      const propToValidate = this.request.body[propName]
-
-      if (propValidations.required && isNullOrUndefined(propToValidate)) {
-        return errors.concat(`${propName} is required`)
-      }
-
-      switch (propValidations.type) {
-        case 'number':
-          if (isNaN(propToValidate)) {
-            return errors.concat(`${propName} has to be numeric`)
-          }
-          break
-        case 'string':
-          if (typeof propToValidate !== 'string') {
-            return errors.concat(`${propName} has to be a string`)
-          }
-          if (propToValidate.length === 0) {
-            return errors.concat(`${propName} cannot be an empty string`)
-          }
-          break
-        case 'email':
-          if (!this.isEmail(propToValidate)) {
-            return errors.concat(`${propName} has to be an email`)
-          }
-          break
-      }
-
-      return errors
-    }, [])
-
-    if (errors.length > 0) {
-      reject(errors)
-    } else {
-      resolve()
-    }
-  })
-
-  private isEmail = (email: string) => {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  }
 }
