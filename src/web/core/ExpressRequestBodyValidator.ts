@@ -7,7 +7,7 @@ export enum Type {
   Email
 }
 
-interface Schema {
+export interface Schema {
   [prop: string]: {
     type: Type,
     required?: boolean,
@@ -18,14 +18,7 @@ class ExpressRequestBodyValidator {
 
   constructor(private request: Request, private schema: Schema) { }
 
-  validate = () => new Promise((resolve, reject) => {
-
-    const errors = this.getValidationErrors();
-
-    if (errors.length > 0) reject(errors);
-    
-    else resolve();
-  });
+  validate = () => this.getValidationErrors();
 
   private getValidationErrors = () => Object.keys(this.schema).reduce((errors: string[], prop) => {
 

@@ -1,15 +1,32 @@
-import { Router } from "express";
+import { Router as ExpressRouter, Request, Response } from "express";
 import bcrypt from 'bcrypt'
 import Repository from "../../repository/Repository";
-import ExpressRequestBodyValidator, { Type } from "../core/ExpressRequestBodyValidator";
+import ExpressRequestBodyValidator, { Type, Schema } from "../core/ExpressRequestBodyValidator";
+
+const validate = (req: Request, res: Response, schema: Schema) => {
+
+  const validator = new ExpressRequestBodyValidator(req, schema)
+
+  const errors = validator.validate()
+
+  if (errors.length > 0) {
+
+    res.status(422)
+    res.json({ errors })
+
+    return false
+  }
+
+  return true
+}
 
 export default (repository: Repository) => {
 
-  const router = Router()
+  const router = ExpressRouter()
 
   router.post('/', async (req, res) => {
 
-    const validator = new ExpressRequestBodyValidator(req, {
+    const valid = validate(req, res, {
       name: {
         type: Type.String,
         required: true
@@ -24,13 +41,7 @@ export default (repository: Repository) => {
       }
     })
 
-    try {
-      await validator.validate()
-    } catch (e) {
-      res.status(422)
-      res.json({ errors: e })
-      return
-    }
+    if (!valid) return
 
     const password = req.body.password
 
