@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 
 const schema = new mongoose.Schema({
-  restaurant: String,
   amount: {
     type: Number,
     required: true
@@ -15,6 +14,16 @@ const schema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  budget: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Budget',
+    required: true
+  },
+  restaurant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Restaurant',
+    required: true
+  }
 })
 
 export default mongoose.model('Expense', schema)
