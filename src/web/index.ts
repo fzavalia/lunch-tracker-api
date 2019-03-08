@@ -8,6 +8,7 @@ import User from '../models/User';
 import Expense from '../models/Expense';
 import ExpensesRouter from './routers/ExpensesRouter';
 import Budget from '../models/Budget';
+import BudgetsRouter from './routers/BudgetsRouter';
 
 interface DBConfig {
   host: string,
@@ -49,7 +50,7 @@ export default async (config: Config) => {
 
   app.use('/users', UsersRouter(users))
   app.use('/expenses', ExpensesRouter(expenses))
-  app.use('/budgets', ExpensesRouter(budgets))
+  app.use('/budgets', BudgetsRouter(budgets))
 
   app.listen(port, () => console.log(`Listening on port ${port}`))
 }
