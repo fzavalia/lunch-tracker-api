@@ -9,6 +9,7 @@ interface ListResult {
 
 interface Repository {
   show: (id: string) => Promise<any>
+  firstWhere: (props: object) => Promise<any>
   list: (page: number, perPage: number) => Promise<ListResult>
   create: (data: any) => Promise<any>
   update: (id: string, data: any) => Promise<any>

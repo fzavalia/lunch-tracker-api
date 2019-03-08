@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { isNullOrUndefined } from "util";
 
-export enum Type {
+export enum ExpressRequestBodyValidatorTypes {
   String,
   Number,
   Email
@@ -9,7 +9,7 @@ export enum Type {
 
 export interface Schema {
   [prop: string]: {
-    type: Type,
+    type: ExpressRequestBodyValidatorTypes,
     required?: boolean,
   }
 }
@@ -41,12 +41,12 @@ class ExpressRequestBodyValidator {
     if (!isNullOrUndefined(propToValidate)) {
 
       switch (propValidations.type) {
-        case Type.Number:
+        case ExpressRequestBodyValidatorTypes.Number:
           if (isNaN(propToValidate)) {
             return `${prop} has to be numeric`;
           }
           break;
-        case Type.String:
+        case ExpressRequestBodyValidatorTypes.String:
           if (typeof propToValidate !== 'string') {
             return `${prop} has to be a string`;
           }
@@ -54,7 +54,7 @@ class ExpressRequestBodyValidator {
             return `${prop} cannot be an empty string`;
           }
           break;
-        case Type.Email:
+        case ExpressRequestBodyValidatorTypes.Email:
           if (!this.isEmail(propToValidate)) {
             return `${prop} has to be an email`;
           }

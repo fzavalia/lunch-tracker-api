@@ -11,6 +11,12 @@ class MongooseRepository implements Repository {
       .orFail()
       .lean()
 
+  firstWhere = async (props: any) =>
+    await this.model
+      .findOne(props)
+      .orFail()
+      .lean();
+
   list = async (page: number, perPage: number) =>
     await this.model
       .find({})
