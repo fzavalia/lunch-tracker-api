@@ -2,6 +2,10 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import morgan from 'morgan';
 import mongoose from 'mongoose'
+import User from '../models/User';
+import Budget from '../models/Budget';
+import Restaurant from '../models/Restaurant';
+import Expense from '../models/Expense';
 
 interface DBConfig {
   host: string,
@@ -36,6 +40,16 @@ export default async (config: Config) => {
   app.use(morgan('tiny'))
 
   app.get('/', (_, res) => res.send('ok'))
+
+  app.post('/users', async (req, res) => {
+    try {
+      const created = await User.create(req.body)
+      res.send(created)
+    } catch(e) {
+      res.status(500)
+      res.send(e)
+    }
+  })
 
   app.listen(port, () => console.log(`Listening on port ${port}`))
 }
