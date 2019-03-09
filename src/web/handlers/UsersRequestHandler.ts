@@ -22,7 +22,7 @@ class UsersRequestHandler extends RequestHandler {
   list = async (req: Request, res: Response) => {
     try {
 
-      const findQuery = User.find(this.filters(req, 'name'))
+      const findQuery = User.find(this.filters(req, { exact: ['name'] }))
       const paginateQuery = this.paginate(req, findQuery)
       const users = await paginateQuery
 

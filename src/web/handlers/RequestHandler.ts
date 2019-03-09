@@ -2,9 +2,47 @@ import { DocumentQuery, Document } from "mongoose";
 import { Request } from "express";
 import { isNullOrUndefined } from "util";
 
+interface FilterOptions {
+  like?: string[]
+  exact?: string[]
+}
+
+class Filters {
+
+  constructor(private req: Request, private options: FilterOptions) { }
+
+  make = () => {
+    let filters = {}
+
+    if (this.options.exact) {
+      filters = { ...filters, ...this.exact(this.options.exact) }
+    }
+
+    if (this.options.like) {
+      filters = { ...filters, ...this.like(this.options.like) }
+    }
+
+    return filters
+  }
+
+  private like = (properties: string[]) => this.makeFilters(properties, (value: any) => new RegExp(value, 'i'))
+
+  private exact = (properties: string[]) => this.makeFilters(properties, (value: any) => value)
+
+  private makeFilters = (properties: string[], map: (val: any) => any) =>
+    properties.reduce((acc, property) => {
+      const value = this.req.query[property]
+      if (value) {
+        return { ...acc, [property]: map(value) }
+      }
+      return acc
+    }, {})
+
+}
+
 abstract class RequestHandler {
 
-  paginate = (req: Request, query: DocumentQuery<Document[], Document, {}>) => {
+  protected paginate = (req: Request, query: DocumentQuery<Document[], Document, {}>) => {
 
     const { page, perPage } = req.query
 
@@ -15,18 +53,7 @@ abstract class RequestHandler {
     return query.skip((page - 1) * perPage).limit(parseInt(perPage))
   }
 
-  filters = (req: Request, ...properties: [string]) =>
-    properties.reduce((acc, property) => {
-
-      const value = req.query[property]
-
-      if (value) {
-        return { ...acc, [property]: new RegExp(value, 'i') }
-      }
-
-      return acc
-
-    }, {})
+  protected filters = (req: Request, options: FilterOptions) => new Filters(req, options).make()
 
   private makePaginationError = () => ({
     message: 'page and perPage query params not present',
