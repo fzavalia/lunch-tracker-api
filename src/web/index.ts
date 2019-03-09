@@ -1,6 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import morgan from 'morgan';
+import cors from 'cors';
 import mongoose from 'mongoose'
 import UsersRequestHandler from './handlers/UsersRequestHandler';
 import RestaurantsRequestHandler from './handlers/RestaurantsRequestHandler';
@@ -38,6 +39,7 @@ export default async (config: Config) => {
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(morgan('tiny'))
+  app.use(cors())
 
   app.get('/', (_, res) => res.send('ok'))
 
