@@ -55,6 +55,18 @@ abstract class RequestHandler {
 
   protected filters = (req: Request, options: FilterOptions) => new Filters(req, options).make()
 
+  protected mapDocument = (document: Document) => {
+
+    const json = document.toJSON()
+
+    json.id = json._id
+
+    delete json._id
+    delete json.__v
+
+    return json
+  }
+
   private makePaginationError = () => ({
     message: 'page and perPage query params not present',
     name: 'Pagination Error'

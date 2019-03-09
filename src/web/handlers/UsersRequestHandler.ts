@@ -8,7 +8,7 @@ class UsersRequestHandler extends RequestHandler {
     try {
 
       const created = await User.create(req.body);
-      res.send(created);
+      res.send(this.mapDocument(created.toJSON()));
 
     }
     catch (e) {
@@ -26,7 +26,8 @@ class UsersRequestHandler extends RequestHandler {
       const paginateQuery = this.paginate(req, findQuery)
       const users = await paginateQuery
 
-      res.send(users)
+      res.send(users.map(this.mapDocument))
+
     }
     catch (e) {
 
