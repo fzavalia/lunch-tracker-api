@@ -42,8 +42,12 @@ export default async (config: Config) => {
   app.get('/', (_, res) => res.send('ok'))
 
   app.post('/users', new UsersRequestHandler().create)
+
   app.post('/restaurants', new RestaurantsRequestHandler().create)
+
+  app.get('/budgets', new BudgetsRequestHandler().list)
   app.post('/budgets', new BudgetsRequestHandler().create)
+  
   app.post('/expenses', new ExpensesRequestHandler().create)
 
   app.listen(port, () => console.log(`Listening on port ${port}`))
