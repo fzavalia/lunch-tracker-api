@@ -41,6 +41,7 @@ export default async (config: Config) => {
 
   app.get('/', (_, res) => res.send('ok'))
 
+  app.get('/users', new UsersRequestHandler().list)
   app.post('/users', new UsersRequestHandler().create)
 
   app.post('/restaurants', new RestaurantsRequestHandler().create)
