@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 import User from '../../models/User';
-import { isNullOrUndefined } from 'util';
+import RequestHandler from './RequestHandler';
 
-class UsersRequestHandler {
-  
+class UsersRequestHandler extends RequestHandler {
+
   create = async (req: Request, res: Response) => {
     try {
 
       const created = await User.create(req.body);
       res.send(created);
-      
+
     }
     catch (e) {
 
@@ -22,18 +22,11 @@ class UsersRequestHandler {
   list = async (req: Request, res: Response) => {
     try {
 
-      const { page, perPage, ...filters } = req.query
+      const findQuery = User.find(this.filters(req, 'name'))
+      const paginateQuery = this.paginate(req, findQuery)
+      const users = await paginateQuery
 
-      if (isNullOrUndefined(page) || isNullOrUndefined(perPage)) {
-        throw {
-          message: 'page and perPage query params not present',
-          name: 'Pagination Error'
-        }
-      }
-
-      const budgets = await User.find(filters).skip((page - 1) * perPage).limit(parseInt(perPage));
-
-      res.send(budgets);
+      res.send(users)
     }
     catch (e) {
 
