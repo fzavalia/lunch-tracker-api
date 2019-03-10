@@ -53,6 +53,7 @@ export default async (config: Config) => {
 
   const restaurantRequestHandler = new RestaurantsRequestHandler()
 
+  app.get('/restaurants', restaurantRequestHandler.list)
   app.post('/restaurants', restaurantRequestHandler.create)
 
   const budgetsRequestHandler = new BudgetsRequestHandler()
@@ -61,7 +62,7 @@ export default async (config: Config) => {
   app.post('/budgets', budgetsRequestHandler.create)
 
   const expensesRequestHandler = new ExpensesRequestHandler()
-  
+
   app.post('/expenses', expensesRequestHandler.create)
 
   app.listen(port, () => console.log(`Listening on port ${port}`))
