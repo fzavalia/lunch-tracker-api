@@ -19,14 +19,29 @@ class UsersRequestHandler extends RequestHandler {
     }
   };
 
+  show = async (req: Request, res: Response) => {
+    try {
+
+      const user = await User.findById(req.params.id).orFail().lean()
+      res.send(this.mapJSON(user))
+
+    }
+    catch (e) {
+
+      res.status(500);
+      res.send(e);
+
+    }
+  }
+
   list = async (req: Request, res: Response) => {
     try {
 
       const findQuery = User.find(this.filters(req, { exact: ['name'] }))
       const paginateQuery = this.paginate(req, findQuery)
-      const users = await paginateQuery
+      const users = await paginateQuery.lean()
 
-      res.send(users.map(this.mapDocument))
+      res.send(users.map(this.mapJSON))
 
     }
     catch (e) {

@@ -55,9 +55,9 @@ abstract class RequestHandler {
 
   protected filters = (req: Request, options: FilterOptions) => new Filters(req, options).make()
 
-  protected mapDocument = (document: Document) => {
+  protected mapDocument = (document: Document) => this.mapJSON(document.toJSON())
 
-    const json = document.toJSON()
+  protected mapJSON = (json: any) => {
 
     json.id = json._id
 

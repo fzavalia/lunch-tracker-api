@@ -45,15 +45,24 @@ export default async (config: Config) => {
 
   app.get('/', (_, res) => res.send('ok'))
 
-  app.get('/users', new UsersRequestHandler().list)
-  app.post('/users', new UsersRequestHandler().create)
+  const usersRequestHandler = new UsersRequestHandler()
 
-  app.post('/restaurants', new RestaurantsRequestHandler().create)
+  app.get('/users', usersRequestHandler.list)
+  app.get('/users/:id', usersRequestHandler.show)
+  app.post('/users', usersRequestHandler.create)
 
-  app.get('/budgets', new BudgetsRequestHandler().list)
-  app.post('/budgets', new BudgetsRequestHandler().create)
+  const restaurantRequestHandler = new RestaurantsRequestHandler()
+
+  app.post('/restaurants', restaurantRequestHandler.create)
+
+  const budgetsRequestHandler = new BudgetsRequestHandler()
+
+  app.get('/budgets', budgetsRequestHandler.list)
+  app.post('/budgets', budgetsRequestHandler.create)
+
+  const expensesRequestHandler = new ExpensesRequestHandler()
   
-  app.post('/expenses', new ExpensesRequestHandler().create)
+  app.post('/expenses', expensesRequestHandler.create)
 
   app.listen(port, () => console.log(`Listening on port ${port}`))
 }
