@@ -14,11 +14,6 @@ const schema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  budget: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Budget',
-    required: true
-  },
   restaurant: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Restaurant',
