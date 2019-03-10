@@ -24,6 +24,8 @@ export default async (config: Config) => {
 
   const { port, db } = config
 
+  mongoose.set('useCreateIndex', true)
+
   await mongoose.connect(
     db.host,
     {

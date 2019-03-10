@@ -8,7 +8,7 @@ class UsersRequestHandler extends RequestHandler {
     try {
 
       const created = await User.create(req.body);
-      res.send(this.mapDocument(created.toJSON()));
+      res.send(this.mapDocument(created));
 
     }
     catch (e) {
