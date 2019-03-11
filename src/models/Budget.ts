@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { months } from '../constants';
 
 const schema = new mongoose.Schema({
   amount: {
@@ -7,7 +8,7 @@ const schema = new mongoose.Schema({
   },
   month: {
     type: String,
-    enum: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
+    enum: months,
     required: true
   },
   year: {
