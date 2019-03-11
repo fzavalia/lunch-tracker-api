@@ -16,4 +16,6 @@ const schema = new mongoose.Schema({
   }
 })
 
+schema.index({ month: 1, year: 1}, { unique: true })
+
 export default mongoose.model('Budget', schema)
