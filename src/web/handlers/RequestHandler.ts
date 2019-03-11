@@ -47,7 +47,7 @@ abstract class RequestHandler {
     const { page, perPage } = req.query
 
     if (isNullOrUndefined(page) || isNullOrUndefined(perPage)) {
-      return query
+      throw this.makePaginationError()
     }
 
     return query.skip((page - 1) * perPage).limit(parseInt(perPage))
@@ -66,6 +66,11 @@ abstract class RequestHandler {
 
     return json
   }
+
+  private makePaginationError = () => ({
+    message: 'page and perPage query params not present',
+    name: 'Pagination Error'
+  })
 }
 
 export default RequestHandler
