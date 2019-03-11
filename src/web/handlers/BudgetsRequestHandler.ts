@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import Budget from '../../models/Budget';
 import RequestHandler from './RequestHandler';
 
@@ -7,7 +6,7 @@ class BudgetsRequestHandler extends RequestHandler {
   create = this.handle(async (req, _) => {
 
     const created = await Budget.create(req.body)
-    
+
     return this.mapDocument(created)
   })
 

@@ -1,43 +1,30 @@
-import { Request, Response } from 'express';
 import User from '../../models/User';
 import RequestHandler from './RequestHandler';
 
 class UsersRequestHandler extends RequestHandler {
 
-  create = async (req: Request, res: Response) => {
-    try {
-      const created = await User.create(req.body);
-      res.send(this.mapDocument(created));
-    }
-    catch (e) {
-      res.status(500);
-      res.send(e);
-    }
-  };
+  create = this.handle(async (req, _) => {
 
-  show = async (req: Request, res: Response) => {
-    try {
-      const user = await User.findById(req.params.id).orFail().lean()
-      res.send(this.mapJSON(user))
-    }
-    catch (e) {
-      res.status(500);
-      res.send(e);
-    }
-  }
+    const created = await User.create(req.body);
 
-  list = async (req: Request, res: Response) => {
-    try {
-      const findQuery = User.find(this.filters(req, { exact: ['name'] }))
-      const paginateQuery = this.paginate(req, findQuery)
-      const users = await paginateQuery.lean()
-      res.send(users.map(this.mapJSON))
-    }
-    catch (e) {
-      res.status(500);
-      res.send(e);
-    }
-  }
+    this.mapDocument(created);
+  });
+
+  show = this.handle(async (req, _) => {
+
+    const user = await User.findById(req.params.id).orFail().lean()
+
+    return this.mapJSON(user)
+  })
+
+  list = this.handle(async (req, _) => {
+
+    const findQuery = User.find(this.filters(req, { exact: ['name'] }))
+    const paginateQuery = this.paginate(req, findQuery)
+    const users = await paginateQuery.lean()
+
+    return users.map(this.mapJSON)
+  })
 }
 
 export default UsersRequestHandler
