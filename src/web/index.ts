@@ -64,7 +64,9 @@ export default async (config: Config) => {
   const expensesRequestHandler = new ExpensesRequestHandler()
 
   app.get('/expenses/year/:year/month/:month', expensesRequestHandler.listForMonth)
+  app.get('/expenses/year/:year/month/:month/spent', expensesRequestHandler.spentOnMonth)
   app.get('/expenses/year/:year', expensesRequestHandler.listForYear)
+  app.get('/expenses/year/:year/spent', expensesRequestHandler.spentOnYear)
   app.post('/expenses', expensesRequestHandler.create)
 
   app.listen(port, () => console.log(`Listening on port ${port}`))

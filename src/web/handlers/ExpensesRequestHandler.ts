@@ -16,6 +16,26 @@ class ExpensesRequestHandler extends RequestHandler {
     }
   };
 
+  listForMonth = async (req: Request, res: Response) => {
+    try {
+
+      const { year, month } = req.params
+
+      const gteDate = moment([year, months.indexOf(month)]).toDate()
+      const lteDate = moment(gteDate).add(1, 'month').toDate()
+
+      const findQuery = Expense.find({ ...this.filters(req, { exact: ['user'] }), date: { $gte: gteDate, $lte: lteDate } })
+      const paginateQuery = this.paginate(req, findQuery)
+      const expenses = await paginateQuery.lean()
+
+      res.send(expenses.map(this.mapJSON))
+    }
+    catch (e) {
+      res.status(500);
+      res.send(e);
+    }
+  }
+
   listForYear = async (req: Request, res: Response) => {
     try {
 
@@ -36,7 +56,7 @@ class ExpensesRequestHandler extends RequestHandler {
     }
   }
 
-  listForMonth = async (req: Request, res: Response) => {
+  spentOnMonth = async (req: Request, res: Response) => {
     try {
 
       const { year, month } = req.params
@@ -45,10 +65,30 @@ class ExpensesRequestHandler extends RequestHandler {
       const lteDate = moment(gteDate).add(1, 'month').toDate()
 
       const findQuery = Expense.find({ ...this.filters(req, { exact: ['user'] }), date: { $gte: gteDate, $lte: lteDate } })
-      const paginateQuery = this.paginate(req, findQuery)
-      const expenses = await paginateQuery.lean()
+      const expenses: any[] = await findQuery.lean()
+      const spent = expenses.reduce((acc, next) => acc + next.amount, 0)
 
-      res.send(expenses.map(this.mapJSON))
+      res.send({ value: spent })
+    }
+    catch (e) {
+      res.status(500);
+      res.send(e);
+    }
+  }
+
+  spentOnYear = async (req: Request, res: Response) => {
+    try {
+
+      const { year } = req.params
+
+      const gteDate = moment([year]).toDate()
+      const lteDate = moment(gteDate).add(1, 'year').toDate()
+
+      const findQuery = Expense.find({ ...this.filters(req, { exact: ['user'] }), date: { $gte: gteDate, $lte: lteDate } })
+      const expenses: any[] = await findQuery.lean()
+      const spent = expenses.reduce((acc, next) => acc + next.amount, 0)
+
+      res.send({ value: spent })
     }
     catch (e) {
       res.status(500);
