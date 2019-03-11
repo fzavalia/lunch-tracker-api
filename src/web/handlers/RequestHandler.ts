@@ -30,7 +30,7 @@ abstract class RequestHandler {
     return json
   }
 
-  protected handle = async (req: Request, res: Response, makeResponse: (req: Request, res: Response) => Promise<any>) => {
+  protected handle = (makeResponse: (req: Request, res: Response) => Promise<any>) => async (req: Request, res: Response) => {
     try {
       res.send(await makeResponse(req, res));
     }
