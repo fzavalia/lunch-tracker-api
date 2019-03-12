@@ -30,6 +30,34 @@ class UsersRequestHandler extends RequestHandler {
     return this.mapDocument(created);
   });
 
+  login = this.handle(async (req, _) => {
+
+    this.validate(req, {
+      password: {
+        type: ExpressRequestBodyValidatorTypes.String,
+        required: true
+      },
+      email: {
+        type: ExpressRequestBodyValidatorTypes.Email,
+        required: true
+      }
+    })
+
+    const user = await User.findOne({ email: req.body.email}).orFail().lean()
+    const match = await bcrypt.compare(req.body.password, user.password)
+
+    if (!match) {
+      throw {
+        message: 'Invalid Password',
+        name: 'InvalidPassword'
+      }
+    }
+
+    delete user.password
+
+    return this.mapJSON(user);
+  });
+
   show = this.handle(async (req, _) => {
 
     const user = await User.findById(req.params.id).orFail().lean()

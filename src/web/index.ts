@@ -43,6 +43,7 @@ const bindUsersRequestHandlerToApp = (app: Express) => {
   app.get('/users', usersRequestHandler.list)
   app.get('/users/:id', usersRequestHandler.show)
   app.post('/users', usersRequestHandler.create)
+  app.post('/users/login', usersRequestHandler.login)
 }
 
 const bindRestaurantsRequestHandlerToApp = (app: Express) => {
