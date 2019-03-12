@@ -19,7 +19,17 @@ class ExpensesRequestHandler extends RequestHandler {
     const gteDate = moment([year, months.indexOf(month)]).toDate()
     const lteDate = moment(gteDate).add(1, 'month').toDate()
 
-    const findQuery = Expense.find({ ...this.filters(req, { exact: ['user'] }), date: { $gte: gteDate, $lte: lteDate } })
+    const findQuery =
+      Expense.find({
+        ...this.filters(req, { exact: ['user'] }),
+        date: {
+          $gte: gteDate,
+          $lte: lteDate
+        }
+      })
+        .populate('user')
+        .populate('restaurant')
+
     const paginateQuery = this.paginate(req, findQuery)
     const expenses = await paginateQuery.lean()
 
@@ -33,7 +43,17 @@ class ExpensesRequestHandler extends RequestHandler {
     const gteDate = moment([year]).toDate()
     const lteDate = moment(gteDate).add(1, 'year').toDate()
 
-    const findQuery = Expense.find({ ...this.filters(req, { exact: ['user'] }), date: { $gte: gteDate, $lte: lteDate } })
+    const findQuery =
+      Expense.find({
+        ...this.filters(req, { exact: ['user'] }),
+        date: {
+          $gte: gteDate,
+          $lte: lteDate
+        }
+      })
+        .populate('user')
+        .populate('restaurant')
+
     const paginateQuery = this.paginate(req, findQuery)
     const expenses = await paginateQuery.lean()
 
