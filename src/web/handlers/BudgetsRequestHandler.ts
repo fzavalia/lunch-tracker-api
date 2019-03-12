@@ -20,6 +20,4 @@ class BudgetsRequestHandler extends RequestHandler {
   })
 }
 
-
-
 export default BudgetsRequestHandler
