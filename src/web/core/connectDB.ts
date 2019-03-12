@@ -11,6 +11,8 @@ const connectDB = (config: DBConfig) => {
 
   mongoose.set('useCreateIndex', true)
 
+  console.log('Connecting to DB')
+
   mongoose.connect(
     config.host,
     {
@@ -20,6 +22,10 @@ const connectDB = (config: DBConfig) => {
       useNewUrlParser: true
     },
   )
+
+  mongoose.connection.on('connected', () => console.log('Connected to DB'))
+  mongoose.connection.on('disconnected', () => console.log('Disconnected from DB'))
+  mongoose.connection.on('error', () => console.log('Could not connect to DB'))
 
   process.on('SIGINT', async () => {
     await mongoose.connection.close()

@@ -28,7 +28,11 @@ export default async (config: Config) => {
   app.use(morgan('tiny'))
   app.use(cors())
 
-  app.get('/', (_, res) => res.send('ok'))
+  app.get('/', (_, res) => {
+    const status = mongoose.connection.readyState === 0 ? 500 : 200
+    res.status(status)
+    res.send()
+  })
 
   bindUsersRequestHandlerToApp(app)
   bindBudgetsRequestHandlerToApp(app)
