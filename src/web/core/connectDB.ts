@@ -1,27 +1,12 @@
 import mongoose from 'mongoose'
 
-export interface DBConfig {
-  host: string,
-  user: string,
-  pass: string,
-  name: string
-}
-
-const connectDB = (config: DBConfig) => {
+const connectDB = (host: string) => {
 
   mongoose.set('useCreateIndex', true)
 
   console.log('Connecting to DB')
 
-  mongoose.connect(
-    config.host,
-    {
-      user: config.user,
-      pass: config.pass,
-      dbName: config.name,
-      useNewUrlParser: true
-    },
-  )
+  mongoose.connect(host, { useNewUrlParser: true })
 
   mongoose.connection.on('connected', () => console.log('Connected to DB'))
   mongoose.connection.on('disconnected', () => console.log('Disconnected from DB'))

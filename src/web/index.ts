@@ -7,19 +7,11 @@ import UsersRequestHandler from './handlers/UsersRequestHandler';
 import RestaurantsRequestHandler from './handlers/RestaurantsRequestHandler';
 import BudgetsRequestHandler from './handlers/BudgetsRequestHandler';
 import ExpensesRequestHandler from './handlers/ExpensesRequestHandler';
-import connectDB, { DBConfig } from './core/connectDB';
+import connectDB from './core/connectDB';
 
+export default async (port: number, dbHost: string) => {
 
-interface Config {
-  port: number
-  db: DBConfig
-}
-
-export default async (config: Config) => {
-
-  const { port, db } = config
-
-  connectDB(db)
+  connectDB(dbHost)
 
   const app = express()
 
