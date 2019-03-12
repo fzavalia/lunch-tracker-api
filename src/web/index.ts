@@ -7,13 +7,8 @@ import UsersRequestHandler from './handlers/UsersRequestHandler';
 import RestaurantsRequestHandler from './handlers/RestaurantsRequestHandler';
 import BudgetsRequestHandler from './handlers/BudgetsRequestHandler';
 import ExpensesRequestHandler from './handlers/ExpensesRequestHandler';
+import connectDB, { DBConfig } from './core/connectDB';
 
-interface DBConfig {
-  host: string,
-  user: string,
-  pass: string,
-  name: string
-}
 
 interface Config {
   port: number
@@ -24,17 +19,7 @@ export default async (config: Config) => {
 
   const { port, db } = config
 
-  mongoose.set('useCreateIndex', true)
-
-  await mongoose.connect(
-    db.host,
-    {
-      user: db.user,
-      pass: db.pass,
-      dbName: db.name,
-      useNewUrlParser: true
-    }
-  )
+  connectDB(db)
 
   const app = express()
 
