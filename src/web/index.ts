@@ -28,18 +28,22 @@ export default async (config: Config) => {
   app.use(morgan('tiny'))
   app.use(cors())
 
-  app.get('/', (_, res) => {
-    const status = mongoose.connection.readyState === 0 ? 500 : 200
-    res.status(status)
-    res.send()
-  })
-
+  bindHealthEndpoint(app)
   bindUsersRequestHandlerToApp(app)
   bindBudgetsRequestHandlerToApp(app)
   bindRestaurantsRequestHandlerToApp(app)
   bindExpensesRequestHandlerToApp(app)
 
   app.listen(port, () => console.log(`Listening on port ${port}`))
+}
+
+const bindHealthEndpoint = (app: Express) => {
+  app.get('/', (_, res) => res.redirect('/health'))
+  app.get('/health', (_, res) => {
+    const status = mongoose.connection.readyState === 0 ? 500 : 200
+    res.status(status)
+    res.send()
+  })
 }
 
 const bindUsersRequestHandlerToApp = (app: Express) => {
