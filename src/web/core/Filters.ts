@@ -10,6 +10,7 @@ class Filters {
   constructor(private req: Request, private options: FilterOptions) { }
 
   make = () => {
+    
     let filters = {}
 
     if (this.options.exact) {
@@ -23,9 +24,11 @@ class Filters {
     return filters
   }
 
-  private like = (properties: string[]) => this.makeFilters(properties, (value: any) => new RegExp(value, 'i'))
+  private like = (properties: string[]) =>
+    this.makeFilters(properties, (value: any) => new RegExp(value, 'i'))
 
-  private exact = (properties: string[]) => this.makeFilters(properties, (value: any) => value)
+  private exact = (properties: string[]) =>
+    this.makeFilters(properties, (value: any) => value)
 
   private makeFilters = (properties: string[], map: (val: any) => any) =>
     properties.reduce((acc, property) => {
