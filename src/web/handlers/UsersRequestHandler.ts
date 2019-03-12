@@ -1,13 +1,34 @@
 import User from '../../models/User';
 import RequestHandler from './RequestHandler';
+import bcrypt from 'bcrypt'
+import ExpressRequestBodyValidator, { ExpressRequestBodyValidatorTypes, Schema } from '../core/ExpressRequestBodyValidator';
+import { Request } from 'express';
 
 class UsersRequestHandler extends RequestHandler {
 
   create = this.handle(async (req, _) => {
 
-    const created = await User.create(req.body);
+    this.validate(req, {
+      name: {
+        type: ExpressRequestBodyValidatorTypes.String,
+        required: true
+      },
+      password: {
+        type: ExpressRequestBodyValidatorTypes.String,
+        required: true
+      },
+      email: {
+        type: ExpressRequestBodyValidatorTypes.Email,
+        required: true
+      }
+    })
 
-    this.mapDocument(created);
+    const password = req.body.password
+    const salted = await bcrypt.hash(password, 10)
+    const data = { ...req.body, password: salted }
+    const created = await User.create(data);
+
+    return this.mapDocument(created);
   });
 
   show = this.handle(async (req, _) => {
