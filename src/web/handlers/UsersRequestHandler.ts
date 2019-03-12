@@ -1,8 +1,7 @@
 import User from '../../models/User';
 import RequestHandler from './RequestHandler';
 import bcrypt from 'bcrypt'
-import ExpressRequestBodyValidator, { ExpressRequestBodyValidatorTypes, Schema } from '../core/ExpressRequestBodyValidator';
-import { Request } from 'express';
+import { ExpressRequestBodyValidatorTypes } from '../core/ExpressRequestBodyValidator';
 
 class UsersRequestHandler extends RequestHandler {
 
