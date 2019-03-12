@@ -1,11 +1,11 @@
 import web from './web'
 
 web({
-  port: 8000,
+  port: process.env.PORT ? parseInt(process.env.PORT) : 8000,
   db: {
-    host: 'mongodb://192.168.99.101:27017',
-    name: 'db',
-    pass: 'example',
-    user: 'root'
+    host: process.env.DB_HOST || 'mongodb://localhost:27017',
+    name: process.env.DB_NAME || 'db',
+    pass: process.env.DB_PASS || 'example',
+    user: process.env.DB_USER || 'root'
   }
 })
