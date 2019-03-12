@@ -65,7 +65,9 @@ class ExpensesRequestHandler extends RequestHandler {
     const gteDate = moment(dateForMoment).toDate()
     const lteDate = moment(gteDate).add(1, unit).toDate()
 
-    return Expense.find({ ...this.filters(req, { exact: ['user'] }), date: { $gte: gteDate, $lte: lteDate } })
+    return Expense
+      .find({ ...this.filters(req, { exact: ['user'] }), date: { $gte: gteDate, $lte: lteDate } })
+      .sort({ date: 'desc' })
   }
 
   private populate = (query: DocumentQuery<Document[], Document, {}>) => query.populate('user').populate('restaurant')
