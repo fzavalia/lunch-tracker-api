@@ -28,6 +28,20 @@ class TokensRequestHandler extends RequestHandler {
       token: this.token.makeFromData({ message: 'no need to decode bro' })
     }
   })
+
+  isValid = this.handle(async (req, _) => {
+
+    const token = req.params.token
+
+    if (this.token.isInvalid(token)) {
+      throw {
+        message: 'Invalid Token',
+        name: 'InvalidToken'
+      }
+    }
+
+    return null
+  })
 }
 
 export default TokensRequestHandler

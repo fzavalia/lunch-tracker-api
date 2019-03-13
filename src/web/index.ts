@@ -46,6 +46,7 @@ const bindHealthEndpoint = (app: Express) => {
 
 const bindTokensRequestHandler = (app: Express, token: Token, password: string) => {
   const handler = new TokensRequestHandler(token, password)
+  app.get('/tokens/:token/valid', handler.isValid)
   app.post('/tokens', handler.create)
 }
 
