@@ -58,12 +58,9 @@ class UsersRequestHandler extends RequestHandler {
 
     user = this.mapJSON(user)
     delete user.password
-    const signingKey = jwt.sign(user, secret)
+    const token = jwt.sign(user, secret)
 
-    return {
-      user,
-      signingKey
-    };
+    return { user, token };
   });
 
   show = this.handle(async (req, _) => {
