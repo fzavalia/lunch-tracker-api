@@ -8,7 +8,7 @@ class Token {
 
   private constructor(private secret: string) { }
 
-  makeFromData = (data: any) => jwt.sign(data, this.secret)
+  makeFromData = (data: any) => jwt.sign(data, this.secret, { expiresIn: '1 week' })
 
   isValid = (token: string) => {
     try {

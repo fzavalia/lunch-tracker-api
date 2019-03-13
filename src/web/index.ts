@@ -10,8 +10,9 @@ import ExpensesRequestHandler from './handlers/ExpensesRequestHandler';
 import connectDB from './core/connectDB';
 import Token from './core/Token';
 import AuthMiddleware from './middlewares/AuthMiddleware';
+import TokensRequestHandler from './handlers/TokensRequestHandler';
 
-export default async (port: number, dbHost: string, secret: string) => {
+export default async (port: number, dbHost: string, secret: string, password: string) => {
 
   connectDB(dbHost)
 
@@ -22,9 +23,11 @@ export default async (port: number, dbHost: string, secret: string) => {
   app.use(morgan('tiny'))
   app.use(cors())
 
-  const authHandler = new AuthMiddleware(Token.withSecret(secret)).handler
+  const token = Token.withSecret(secret)
+  const authHandler = new AuthMiddleware(token).handler
 
   bindHealthEndpoint(app)
+  bindTokensRequestHandler(app, token, password)
   bindUsersRequestHandlerToApp(app, authHandler)
   bindBudgetsRequestHandlerToApp(app, authHandler)
   bindRestaurantsRequestHandlerToApp(app, authHandler)
@@ -34,12 +37,16 @@ export default async (port: number, dbHost: string, secret: string) => {
 }
 
 const bindHealthEndpoint = (app: Express) => {
-  app.get('/', (_, res) => res.redirect('/health'))
   app.get('/health', (_, res) => {
     const status = mongoose.connection.readyState === 0 ? 500 : 200
     res.status(status)
     res.send()
   })
+}
+
+const bindTokensRequestHandler = (app: Express, token: Token, password: string) => {
+  const handler = new TokensRequestHandler(token, password)
+  app.post('/tokens', handler.create)
 }
 
 const bindUsersRequestHandlerToApp = (app: Express, authHandler: RequestHandler) => {
