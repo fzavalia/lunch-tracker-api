@@ -1,4 +1,4 @@
-import express, { Router, Express } from 'express'
+import express, { Router, Express, Request, Response, NextFunction } from 'express'
 import bodyParser from 'body-parser'
 import morgan from 'morgan';
 import cors from 'cors';
@@ -8,6 +8,7 @@ import RestaurantsRequestHandler from './handlers/RestaurantsRequestHandler';
 import BudgetsRequestHandler from './handlers/BudgetsRequestHandler';
 import ExpensesRequestHandler from './handlers/ExpensesRequestHandler';
 import connectDB from './core/connectDB';
+import Auth from './core/Auth';
 
 export default async (port: number, dbHost: string, secret: string) => {
 
@@ -20,11 +21,13 @@ export default async (port: number, dbHost: string, secret: string) => {
   app.use(morgan('tiny'))
   app.use(cors())
 
+  const auth = new Auth(secret)
+
   bindHealthEndpoint(app)
-  bindUsersRequestHandlerToApp(app, secret)
-  bindBudgetsRequestHandlerToApp(app)
-  bindRestaurantsRequestHandlerToApp(app)
-  bindExpensesRequestHandlerToApp(app)
+  bindUsersRequestHandlerToApp(app, auth)
+  bindBudgetsRequestHandlerToApp(app, auth)
+  bindRestaurantsRequestHandlerToApp(app, auth)
+  bindExpensesRequestHandlerToApp(app, auth)
 
   app.listen(port, () => console.log(`Listening on port ${port}`))
 }
@@ -38,31 +41,31 @@ const bindHealthEndpoint = (app: Express) => {
   })
 }
 
-const bindUsersRequestHandlerToApp = (app: Express, secret: string) => {
-  const usersRequestHandler = new UsersRequestHandler(secret)
-  app.get('/users', usersRequestHandler.list)
-  app.get('/users/:id', usersRequestHandler.show)
-  app.post('/users', usersRequestHandler.create)
-  app.post('/users/login', usersRequestHandler.login)
+const bindUsersRequestHandlerToApp = (app: Express, auth: Auth) => {
+  const handler = new UsersRequestHandler(auth)
+  app.get('/users', handler.list)
+  app.get('/users/:id', handler.show)
+  app.post('/users', handler.create)
+  app.post('/users/login', handler.login)
 }
 
-const bindRestaurantsRequestHandlerToApp = (app: Express) => {
-  const restaurantRequestHandler = new RestaurantsRequestHandler()
-  app.get('/restaurants', restaurantRequestHandler.list)
-  app.post('/restaurants', restaurantRequestHandler.create)
+const bindRestaurantsRequestHandlerToApp = (app: Express, auth: Auth) => {
+  const handler = new RestaurantsRequestHandler()
+  app.get('/restaurants', auth.middleware, handler.list)
+  app.post('/restaurants', auth.middleware, handler.create)
 }
 
-const bindBudgetsRequestHandlerToApp = (app: Express) => {
-  const budgetsRequestHandler = new BudgetsRequestHandler()
-  app.get('/budgets', budgetsRequestHandler.list)
-  app.post('/budgets', budgetsRequestHandler.create)
+const bindBudgetsRequestHandlerToApp = (app: Express, auth: Auth) => {
+  const handler = new BudgetsRequestHandler()
+  app.get('/budgets', auth.middleware, handler.list)
+  app.post('/budgets', auth.middleware, handler.create)
 }
 
-const bindExpensesRequestHandlerToApp = (app: Express) => {
-  const expensesRequestHandler = new ExpensesRequestHandler()
-  app.get('/expenses/year/:year/month/:month', expensesRequestHandler.listForMonth)
-  app.get('/expenses/year/:year/month/:month/spent', expensesRequestHandler.spentOnMonth)
-  app.get('/expenses/year/:year', expensesRequestHandler.listForYear)
-  app.get('/expenses/year/:year/spent', expensesRequestHandler.spentOnYear)
-  app.post('/expenses', expensesRequestHandler.create)
+const bindExpensesRequestHandlerToApp = (app: Express, auth: Auth) => {
+  const handler = new ExpensesRequestHandler()
+  app.get('/expenses/year/:year/month/:month', auth.middleware, handler.listForMonth)
+  app.get('/expenses/year/:year/month/:month/spent', auth.middleware, handler.spentOnMonth)
+  app.get('/expenses/year/:year', auth.middleware, handler.listForYear)
+  app.get('/expenses/year/:year/spent', auth.middleware, handler.spentOnYear)
+  app.post('/expenses', auth.middleware, handler.create)
 }

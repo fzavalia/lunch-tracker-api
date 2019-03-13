@@ -1,15 +1,12 @@
 import User from '../../models/User';
 import RequestHandler from './RequestHandler';
 import { ExpressRequestBodyValidatorTypes } from '../core/ExpressRequestBodyValidator';
-import Auth from '../core/auth';
+import Auth from '../core/Auth';
 
 class UsersRequestHandler extends RequestHandler {
 
-  private auth: Auth
-
-  constructor(secret: string) {
+  constructor(private auth: Auth) {
     super()
-    this.auth = new Auth(secret)
   }
 
   create = this.handle(async (req, _) => {

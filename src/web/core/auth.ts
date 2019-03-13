@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { Request, Response, NextFunction } from 'express';
 
 class Auth {
 
@@ -30,8 +31,42 @@ class Auth {
 
   makeToken = (data: any) => jwt.sign(data, this.secret)
 
-  validateToken = (token: string) => {
-    jwt.verify(token, this.secret)
+  tokenIsValid = (token: string) => {
+    try {
+      jwt.verify(token, this.secret)
+      return true
+    } catch (e) {
+      return false
+    }
+  }
+
+  middleware = (req: Request, res: Response, next: NextFunction) => {
+
+    const authorization = req.headers.authorization
+
+    if (!authorization) {
+
+      res.status(400)
+      res.send({
+        message: 'Authorization header not present',
+        name: 'AuthorizationHeaderNotPresent'
+      })
+      return
+    }
+
+    const token = authorization.split(' ')[1]
+
+    if (!this.tokenIsValid(token)) {
+
+      res.status(403)
+      res.send({
+        message: 'Invalid Token',
+        name: 'InvalidToken'
+      })
+      return
+    }
+
+    next()
   }
 }
 
