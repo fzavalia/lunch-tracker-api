@@ -9,7 +9,7 @@ import BudgetsRequestHandler from './handlers/BudgetsRequestHandler';
 import ExpensesRequestHandler from './handlers/ExpensesRequestHandler';
 import connectDB from './core/connectDB';
 
-export default async (port: number, dbHost: string) => {
+export default async (port: number, dbHost: string, secret: string) => {
 
   connectDB(dbHost)
 
@@ -21,7 +21,7 @@ export default async (port: number, dbHost: string) => {
   app.use(cors())
 
   bindHealthEndpoint(app)
-  bindUsersRequestHandlerToApp(app)
+  bindUsersRequestHandlerToApp(app, secret)
   bindBudgetsRequestHandlerToApp(app)
   bindRestaurantsRequestHandlerToApp(app)
   bindExpensesRequestHandlerToApp(app)
@@ -38,8 +38,8 @@ const bindHealthEndpoint = (app: Express) => {
   })
 }
 
-const bindUsersRequestHandlerToApp = (app: Express) => {
-  const usersRequestHandler = new UsersRequestHandler()
+const bindUsersRequestHandlerToApp = (app: Express, secret: string) => {
+  const usersRequestHandler = new UsersRequestHandler(secret)
   app.get('/users', usersRequestHandler.list)
   app.get('/users/:id', usersRequestHandler.show)
   app.post('/users', usersRequestHandler.create)

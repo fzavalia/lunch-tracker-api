@@ -1,12 +1,16 @@
 import User from '../../models/User';
 import RequestHandler from './RequestHandler';
-import bcrypt from 'bcrypt'
 import { ExpressRequestBodyValidatorTypes } from '../core/ExpressRequestBodyValidator';
-import jwt from 'jsonwebtoken'
-
-const secret = 'nPCeQXbgyFqiBzEpAqlVEqOLubfpigPNYfAQhK32OMdqTrcsreLuyeh8wMBmalI'
+import Auth from '../core/auth';
 
 class UsersRequestHandler extends RequestHandler {
+
+  private auth: Auth
+
+  constructor(secret: string) {
+    super()
+    this.auth = new Auth(secret)
+  }
 
   create = this.handle(async (req, _) => {
 
@@ -26,7 +30,7 @@ class UsersRequestHandler extends RequestHandler {
     })
 
     const password = req.body.password
-    const salted = await bcrypt.hash(password, 10)
+    const salted = await this.auth.saltPassword(password)
     const data = { ...req.body, password: salted }
     const created = await User.create(data);
 
@@ -47,18 +51,12 @@ class UsersRequestHandler extends RequestHandler {
     })
 
     let user = await User.findOne({ email: req.body.email }).orFail().lean()
-    const match = await bcrypt.compare(req.body.password, user.password)
 
-    if (!match) {
-      throw {
-        message: 'Invalid Password',
-        name: 'InvalidPassword'
-      }
-    }
+    this.auth.comparePasswordToHash(req.body.password, user.password)
 
     user = this.mapJSON(user)
     delete user.password
-    const token = jwt.sign(user, secret)
+    const token = this.auth.makeToken(user)
 
     return { user, token };
   });

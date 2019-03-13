@@ -16,7 +16,7 @@ class Auth {
     return await bcrypt.hash(password, this.salt)
   }
 
-  comparePassword = async (password: string, hash: string) => {
+  comparePasswordToHash = async (password: string, hash: string) => {
 
     const match = await bcrypt.compare(password, hash)
 
@@ -28,7 +28,7 @@ class Auth {
     }
   }
 
-  makeToken = (user: any) => jwt.sign(user, this.secret)
+  makeToken = (data: any) => jwt.sign(data, this.secret)
 
   validateToken = (token: string) => {
     jwt.verify(token, this.secret)
