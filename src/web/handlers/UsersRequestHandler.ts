@@ -2,6 +2,9 @@ import User from '../../models/User';
 import RequestHandler from './RequestHandler';
 import bcrypt from 'bcrypt'
 import { ExpressRequestBodyValidatorTypes } from '../core/ExpressRequestBodyValidator';
+import jwt from 'jsonwebtoken'
+
+const secret = 'nPCeQXbgyFqiBzEpAqlVEqOLubfpigPNYfAQhK32OMdqTrcsreLuyeh8wMBmalI'
 
 class UsersRequestHandler extends RequestHandler {
 
@@ -43,7 +46,7 @@ class UsersRequestHandler extends RequestHandler {
       }
     })
 
-    const user = await User.findOne({ email: req.body.email}).orFail().lean()
+    let user = await User.findOne({ email: req.body.email }).orFail().lean()
     const match = await bcrypt.compare(req.body.password, user.password)
 
     if (!match) {
@@ -53,9 +56,14 @@ class UsersRequestHandler extends RequestHandler {
       }
     }
 
+    user = this.mapJSON(user)
     delete user.password
+    const signingKey = jwt.sign(user, secret)
 
-    return this.mapJSON(user);
+    return {
+      user,
+      signingKey
+    };
   });
 
   show = this.handle(async (req, _) => {
