@@ -1,5 +1,7 @@
 FROM node:10-alpine
 
+RUN apk add python make build-base
+
 RUN npm config set unsafe-perm true && \ 
     npm install -g yarn
 
