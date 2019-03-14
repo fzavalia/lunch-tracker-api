@@ -11,7 +11,7 @@ class AuthMiddleware {
 
     if (!authorization) {
 
-      res.status(400)
+      res.status(401)
       res.send({
         message: 'Authorization header not present',
         name: 'AuthorizationHeaderNotPresent'
@@ -19,11 +19,11 @@ class AuthMiddleware {
       return
     }
 
-    const [, _token] = authorization.split(' ')
+    const [, authorizationToken] = authorization.split(' ')
 
-    if (this.token.isInvalid(_token)) {
+    if (this.token.isInvalid(authorizationToken)) {
 
-      res.status(403)
+      res.status(401)
       res.send({
         message: 'Invalid Token',
         name: 'InvalidToken'
