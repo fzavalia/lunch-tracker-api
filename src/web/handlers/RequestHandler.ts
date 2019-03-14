@@ -11,7 +11,11 @@ abstract class RequestHandler {
       res.send(await makeResponse(req, res));
     }
     catch (e) {
+      if (e.name === 'InvalidPassword') {
+        res.status(403)
+      } else {
       res.status(500);
+      }
       res.send(e);
     }
   }
