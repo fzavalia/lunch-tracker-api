@@ -76,4 +76,5 @@ const bindExpensesRequestHandlerToApp = (app: Express, authHandler: RequestHandl
   app.get('/expenses/year/:year', handler.listForYear)
   app.get('/expenses/year/:year/spent', handler.spentOnYear)
   app.post('/expenses', authHandler, handler.create)
+  app.delete('/expenses/:id', authHandler, handler.delete)
 }
