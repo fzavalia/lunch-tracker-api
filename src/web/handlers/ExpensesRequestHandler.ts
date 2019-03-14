@@ -14,6 +14,13 @@ class ExpensesRequestHandler extends RequestHandler {
     return this.mapDocument(created);
   });
 
+  delete = this.handle(async (req, _) => {
+
+    const deleted = await Expense.findByIdAndDelete(req.params.id).lean();
+
+    return this.mapJSON(deleted);
+  });
+
   listForMonth = this.handle(async (req, _) => {
 
     const findQuery = this.findQuery(req, 'month')
