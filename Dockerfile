@@ -13,8 +13,6 @@ COPY yarn.lock .
 RUN yarn && \
     yarn build
 
-HEALTHCHECK --interval=5s --timeout=3s CMD curl --fail http://localhost:8000/health || exit 1
-
-EXPOSE 8000
+HEALTHCHECK --interval=5s --timeout=3s CMD curl --fail http://localhost:$PORT/health || exit 1
 
 CMD node build/index.js
