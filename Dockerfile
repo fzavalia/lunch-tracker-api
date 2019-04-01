@@ -15,4 +15,6 @@ RUN yarn && \
 
 HEALTHCHECK --interval=5s --timeout=3s CMD curl --fail http://localhost:8000/health || exit 1
 
+EXPOSE 8000
+
 CMD node build/index.js

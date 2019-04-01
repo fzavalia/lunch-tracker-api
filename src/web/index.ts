@@ -12,7 +12,9 @@ import Token from './core/Token';
 import AuthMiddleware from './middlewares/AuthMiddleware';
 import TokensRequestHandler from './handlers/TokensRequestHandler';
 
-export default async (port: number, dbHost: string, secret: string, password: string) => {
+export default async (dbHost: string, secret: string, password: string) => {
+
+  const port = 8000
 
   connectDB(dbHost)
 
