@@ -18,6 +18,13 @@ class BudgetsRequestHandler extends RequestHandler {
 
     return budgets.map(this.mapJSON);
   })
+
+  update = this.handle(async (req, _) => {
+
+    const updated = await Budget.findByIdAndUpdate(req.params.id, { amount: req.body.amount }, { new: true }).lean()
+
+    return this.mapJSON(updated);
+  })
 }
 
 export default BudgetsRequestHandler

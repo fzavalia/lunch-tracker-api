@@ -67,6 +67,7 @@ const bindBudgetsRequestHandlerToApp = (app: Express, authHandler: RequestHandle
   const handler = new BudgetsRequestHandler()
   app.get('/budgets', handler.list)
   app.post('/budgets', authHandler, handler.create)
+  app.put('/budgets/:id', authHandler, handler.create)
 }
 
 const bindExpensesRequestHandlerToApp = (app: Express, authHandler: RequestHandler) => {
